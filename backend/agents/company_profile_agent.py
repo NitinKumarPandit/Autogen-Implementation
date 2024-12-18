@@ -23,13 +23,13 @@ website_summarizer_agent=AssistantAgent(
 planner = AssistantAgent(
     "planner",
     model_client=model_client,
-    handoffs=["personaGenerator","WebsiteSummarizerAgent", "user"],
+    handoffs=["PersonaGeneratorAgent","WebsiteSummarizerAgent", "user"],
     system_message = """
 You are a highly organized planning agent specializing in creating company profiles that include the company overview/description and the target personas/audiences. 
 - Develop a clear, step-by-step plan** for generating the company profile based on the provided information and the capabilities of the available agents.
 - Coordinate the company profile generation by delegating tasks to specialized agents:
     - WebsiteSummarizerAgent**: Use this agent for scraping and summarizing company website data using the provided website URL.
-    - PersonaGenerator**: Use this agent to generate target personas/audiences based on the summarized website data.
+    - PersonaGeneratorAgent**: Use this agent to generate target personas/audiences based on the summarized website data.
     - User: Request any additional information required directly from the user.
 - Communicate this plan explicitly to ensure transparency and alignment.
 - Always provide the plan overview to the userfirst. Share the plan explicitly before initiating any handoffs.
@@ -43,8 +43,8 @@ Your primary focus is to ensure that the process is systematic, efficient, and f
 )
 
 
-personaGenerator = AssistantAgent(
-     "personaGenerator", model_client=model_client, handoffs=["planner"],
+persona_generator_agent = AssistantAgent(
+     "PersonaGeneratorAgent", model_client=model_client, handoffs=["planner"],
      system_message="""
             You are an expert at identifying target customers/audiences for companies using their website data. Perform the following tasks:
             1. Identify target personas or audiences for the company using the company website data.
@@ -61,4 +61,4 @@ user_proxy=UserProxyAgent("user", description="This agent acts as a proxy for th
 
 termination = HandoffTermination(target="user") | TextMentionTermination("TERMINATE")
 
-company_profile_agent= Swarm([planner, user_proxy, website_summarizer_agent, personaGenerator], termination_condition=termination)
+company_profile_agent= Swarm([planner, user_proxy, website_summarizer_agent, persona_generator_agent], termination_condition=termination)
