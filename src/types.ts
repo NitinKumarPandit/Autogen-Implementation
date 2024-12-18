@@ -4,10 +4,10 @@ export interface User {
   name: string;
   avatar: string;
   isOnline: boolean;
-  type: 'AI' | 'Human';
+  type: "AI" | "Human";
   description: string;
   role: string;
-  jobFunction: 'Sales' | 'Marketing' | 'Development' | 'Design' | 'Support';
+  jobFunction: "Sales" | "Marketing" | "Development" | "Design" | "Support";
   metrics: AgentMetrics;
   workSamples: WorkSample[];
   lastActive: Date;
@@ -16,36 +16,62 @@ export interface User {
 export interface BaseMessage {
   id: string;
   timestamp: Date;
-  type: 'message' | 'system' | 'typing';
+  type: "message" | "system" | "typing";
 }
 
+// export interface AgentResponse {
+//   reasoning?: string;
+//   question?: string;
+//   toolCallIds?: string[];
+//   output: {
+//     type: "companies" | "table" | "strategy" | "analysis";
+//     data: any;
+//   };
+// }
 export interface AgentResponse {
   reasoning: string;
-  output: {
-    type: 'companies' | 'table' | 'strategy' | 'analysis';
+  question?: string;
+  toolCallIds?: string[];
+  output?: {
+    type:
+      | "companies"
+      | "table"
+      | "strategy"
+      | "analysis"
+      | "proposal"
+      | "company_profile";
     data: any;
   };
 }
 
-export interface MessageContent {
-  type: 'text' | 'agent-response';
+export interface IMessageContent {
+  type: "text" | "agent-response";
   data: string | AgentResponse;
 }
 
 export interface Message extends BaseMessage {
-  type: 'message';
-  content: MessageContent;
+  type: "message";
+  content: IMessageContent;
   sender: User;
   isRead: boolean;
 }
 
+export interface ToolCalls {
+  [x: string]: {
+    label: string;
+    state: boolean;
+    call_id: string;
+    name?: string;
+  };
+}
+
 export interface SystemMessage extends BaseMessage {
-  type: 'system';
+  type: "system";
   content: string;
 }
 
 export interface TypingMessage extends BaseMessage {
-  type: 'typing';
+  type: "typing";
   sender: User;
 }
 

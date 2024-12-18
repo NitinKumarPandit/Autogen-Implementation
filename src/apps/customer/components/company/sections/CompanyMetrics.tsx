@@ -8,7 +8,7 @@ import type { CompanyData } from "../types";
 interface CompanyMetricsProps {
   data: CompanyData;
   isEditing: boolean;
-  onUpdate: (section: keyof CompanyData, value: any) => void;
+  onUpdate: (data: Partial<CompanyData>) => void;
 }
 
 const metrics = [
@@ -85,14 +85,22 @@ export function CompanyMetrics({
             {isEditing ? (
               <input
                 type={key === "yearFounded" ? "number" : "text"}
-                value={data[key as keyof CompanyData] || ""}
+                value={
+                  data[
+                    key as keyof CompanyData[
+                      | "headquarters"
+                      | "employeeSize"
+                      | "industry"
+                      | "yearFounded"]
+                  ] || ""
+                }
                 onChange={(e) =>
-                  onUpdate(
-                    key,
-                    key === "yearFounded"
-                      ? parseInt(e.target.value)
-                      : e.target.value
-                  )
+                  onUpdate({
+                    [key]:
+                      key === "yearFounded"
+                        ? parseInt(e.target.value)
+                        : e.target.value,
+                  })
                 }
                 className="text-2xl font-semibold w-full bg-transparent"
                 style={{ color: theme.colors.text.primary }}
@@ -102,7 +110,13 @@ export function CompanyMetrics({
                 className="text-2xl font-semibold"
                 style={{ color: theme.colors.text.primary }}
               >
-                {data[key as keyof CompanyData] || "-"}
+                {data[
+                  key as keyof CompanyData[
+                    | "headquarters"
+                    | "employeeSize"
+                    | "industry"
+                    | "yearFounded"]
+                ] || "-"}
               </p>
             )}
           </div>

@@ -6,7 +6,7 @@ import type { CompanyData } from "../types";
 interface CompanyHeaderProps {
   data: CompanyData;
   isEditing: boolean;
-  onUpdate: (section: keyof CompanyData, value: any) => void;
+  onUpdate: (data: Partial<CompanyData>) => void;
   onToggleEdit: () => void;
 }
 
@@ -51,7 +51,7 @@ export function CompanyHeader({
                     const file = e.target.files?.[0];
                     if (file) {
                       // Handle file upload
-                      onUpdate("logo", URL.createObjectURL(file));
+                      onUpdate({ logo: URL.createObjectURL(file) });
                     }
                   }}
                 />
@@ -84,7 +84,7 @@ export function CompanyHeader({
               <input
                 type="text"
                 value={data.name}
-                onChange={(e) => onUpdate("name", e.target.value)}
+                onChange={(e) => onUpdate({ name: e.target.value })}
                 className="text-3xl font-bold w-full bg-transparent border-b"
                 style={{
                   color: theme.colors.text.primary,

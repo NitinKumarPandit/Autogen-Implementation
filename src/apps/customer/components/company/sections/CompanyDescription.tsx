@@ -8,7 +8,7 @@ import type { CompanyData } from "../types";
 interface CompanyDescriptionProps {
   data: CompanyData;
   isEditing: boolean;
-  onUpdate: (section: keyof CompanyData, value: any) => void;
+  onUpdate: (data: Partial<CompanyData>) => void;
 }
 
 export function CompanyDescription({
@@ -17,6 +17,7 @@ export function CompanyDescription({
   onUpdate,
 }: CompanyDescriptionProps) {
   const { isOpen, setIsOpen, messages, handleSubmit } = useChatDialog();
+  const formattedDescription = data.description.replace(/\n/g, "<br/>");
 
   return (
     <div>
@@ -32,7 +33,7 @@ export function CompanyDescription({
       {isEditing ? (
         <textarea
           value={data.description}
-          onChange={(e) => onUpdate("description", e.target.value)}
+          onChange={(e) => onUpdate({ description: e.target.value })}
           className="w-full p-4 rounded-lg border min-h-[120px] resize-none"
           style={{
             borderColor: theme.colors.border.light,
@@ -40,12 +41,13 @@ export function CompanyDescription({
           }}
         />
       ) : (
-        <p
+        <div
           className="text-lg leading-relaxed"
           style={{ color: theme.colors.text.secondary }}
+          dangerouslySetInnerHTML={{ __html: formattedDescription }}
         >
-          {data.description}
-        </p>
+          {/* {data.description} */}
+        </div>
       )}
     </div>
   );
